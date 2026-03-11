@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Protein - Ligand Interactions | IIT Ropar</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="page">
+      <header class="top-bar">
+        <div class="top-bar-left">
+          <img
+            src="images (1).png"
+            alt="Indian Institute of Technology Ropar logo"
+            class="logo"
+          />
+          <span class="institute-name">Indian Institute of Technology Ropar</span>
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="hero-card">
+          <div class="hero-text">
+            <p class="section-tagline">Real Time Simulation of Protein - Ligand</p>
+            <h1 class="hero-title">Protein - Ligand<br />Interactions</h1>
+          </div>
+          <div class="hero-visual">
+            <img
+              src="Screenshot 2026-01-16 103921.png"
+              alt="Protein-ligand structure visual"
+              class="hero-image"
+            />
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h2 class="section-title">Share Your Inputs</h2>
+
+          <form class="input-form" id="interaction-form">
+            <div class="field-row">
+              <div class="field">
+                <label for="proteinName" class="field-label">1. Protein Name</label>
+                <input
+                  type="text"
+                  id="proteinName"
+                  name="proteinName"
+                  placeholder="Enter protein name"
+                  required
+                />
+              </div>
+              <div class="field">
+                <label for="ligandName" class="field-label">2. Ligand's Name</label>
+                <input
+                  type="text"
+                  id="ligandName"
+                  name="ligandName"
+                  placeholder="Enter ligand name"
+                  required
+                />
+              </div>
+            </div>
+
+            <h2 class="section-title section-title--spaced">
+              Share The Results You Need
+            </h2>
+
+            <div class="results-table" aria-label="Select desired results">
+              <div class="results-header">
+                <div class="results-header-cell results-header-cell--label">
+                  &nbsp;
+                </div>
+                <div class="results-header-cell">Protein - Protein</div>
+                <div class="results-header-cell">Ligand - Ligand</div>
+                <div class="results-header-cell">Protein - Ligand</div>
+              </div>
+
+              <div class="results-row">
+                <div class="results-label">1. RMSD</div>
+                <div class="results-cell">
+                  <input type="checkbox" id="rmsd-pp" />
+                </div>
+                <div class="results-cell">
+                  <input type="checkbox" id="rmsd-ll" />
+                </div>
+                <div class="results-cell">
+                  <input type="checkbox" id="rmsd-pl" />
+                </div>
+              </div>
+
+              <div class="results-row">
+                <div class="results-label">2. H-Bond</div>
+                <div class="results-cell">
+                  <input type="checkbox" id="hbond-pp" />
+                </div>
+                <div class="results-cell">
+                  <input type="checkbox" id="hbond-ll" />
+                </div>
+                <div class="results-cell">
+                  <input type="checkbox" id="hbond-pl" />
+                </div>
+              </div>
+
+              <div class="results-row">
+                <div class="results-label">3. Ionic Energy</div>
+                <div class="results-cell">
+                  <input type="checkbox" id="ionic-pp" />
+                </div>
+                <div class="results-cell">
+                  <input type="checkbox" id="ionic-ll" />
+                </div>
+                <div class="results-cell">
+                  <input type="checkbox" id="ionic-pl" />
+                </div>
+              </div>
+
+              <div class="results-row">
+                <div class="results-label">4. XYZ</div>
+                <div class="results-cell">
+                  <input type="checkbox" id="xyz-pp" />
+                </div>
+                <div class="results-cell">
+                  <input type="checkbox" id="xyz-ll" />
+                </div>
+                <div class="results-cell">
+                  <input type="checkbox" id="xyz-pl" />
+                </div>
+              </div>
+            </div>
+
+            <div class="form-footer">
+              <label class="checkbox-label">
+                <input type="checkbox" id="tnc" required />
+                <span>I agree to the terms and conditions</span>
+              </label>
+
+              <button type="submit" class="primary-button">
+                Submit Request
+              </button>
+            </div>
+          </form>
+        </section>
+      </main>
+
+      <footer class="page-footer">
+        <div class="footer-item">Helpline No.: +91-XXXXXXXXXX</div>
+        <div class="footer-item">E-mail: example@iitrpr.ac.in</div>
+      </footer>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script src="script.js"></script>
+  </body>
+  </html>
+

@@ -1,0 +1,18 @@
+:root {
+  --bg-gradient-start: #0b0524;
+  --bg-gradient-end: #1d0b4a;
+  --card-bg: rgba(43, 24, 91, 0.9);
+  --card-bg-soft: rgba(66, 36, 128, 0.9);
+  --accent: #e749ff;
+  --accent-soft: #b46cff;
+  --text-main: #ffffff;
+  --text-muted: #c8bff0;
+  --border-subtle: rgba(255, 255, 255, 0.12);
+  --focus-ring: 0 0 0 2px rgba(231, 73, 255, 0.7);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 18px;
+  --shadow-soft: 0 18px 60px rgba(0, 0, 0, 0.55);
+  --transition-fast: 150ms ease-out;
+  --transition-med: 220ms ease-out;
+}

@@ -2,13 +2,15 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import Results from './pages/Results';
 import Admin from './pages/Admin';
 
-function ProtectedRoute({ children, adminOnly }) {
+function ProtectedRoute({ children, adminOnly, userOnly }) {
   const { user, loading } = useAuth();
   if (loading) return <div className="page"><p style={{ color: 'var(--text-muted)', padding: 24 }}>Loading...</p></div>;
   if (!user) return <Navigate to="/login" replace />;
   if (adminOnly && user.role !== 'admin') return <Navigate to="/dashboard" replace />;
+  if (userOnly && user.role !== 'user') return <Navigate to="/admin" replace />;
   return children;
 }
 
@@ -28,6 +30,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/results"
+        element={
+          <ProtectedRoute userOnly>
+            <Results />
           </ProtectedRoute>
         }
       />

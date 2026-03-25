@@ -1,4 +1,5 @@
-const API_BASE = '/api';
+/** In dev, set VITE_API_BASE=http://localhost:5000/api in .env.development so requests hit the Express server on port 5000. */
+const API_BASE = import.meta.env.VITE_API_BASE || '/api';
 
 async function request(path, options = {}) {
   const token = localStorage.getItem('btp_token');
@@ -21,6 +22,19 @@ export const api = {
 export function uploadSubmission(formData) {
   const token = localStorage.getItem('btp_token');
   return fetch(`${API_BASE}/submissions`, {
+    method: 'POST',
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: formData,
+  }).then(async (res) => {
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.message || 'Upload failed');
+    return data;
+  });
+}
+
+export function uploadReturnedResult(submissionId, formData) {
+  const token = localStorage.getItem('btp_token');
+  return fetch(`${API_BASE}/submissions/admin/${submissionId}/return`, {
     method: 'POST',
     headers: token ? { Authorization: `Bearer ${token}` } : {},
     body: formData,

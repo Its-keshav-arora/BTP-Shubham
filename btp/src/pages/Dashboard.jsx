@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { api, uploadSubmission } from '../api/client';
+import { Link, useNavigate } from 'react-router-dom';
+import { uploadSubmission } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import Layout from '../components/Layout';
 import Toast from '../components/Toast';
@@ -15,8 +15,10 @@ export default function Dashboard() {
   const [results, setResults] = useState({
     rmsd: { pp: false, ll: false, pl: false },
     hbond: { pp: false, ll: false, pl: false },
-    ionic: { pp: false, ll: false, pl: false },
-    xyz: { pp: false, ll: false, pl: false },
+    ionic: { pp: false, ll: false, pl: false }, 
+    Rg: { pp: false, ll: false, pl: false },
+    rmsf : { pp: false, ll: false, pl: false },
+    sasa : { pp: false, ll: false, pl: false },
   });
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -64,7 +66,9 @@ export default function Dashboard() {
           rmsd: results.rmsd,
           hbond: results.hbond,
           ionic: results.ionic,
-          xyz: results.xyz,
+          Rg: results.Rg,
+          rmsf: results.rmsf,
+          sasa: results.sasa,
         })
       );
       await uploadSubmission(formData);
@@ -77,7 +81,9 @@ export default function Dashboard() {
         rmsd: { pp: false, ll: false, pl: false },
         hbond: { pp: false, ll: false, pl: false },
         ionic: { pp: false, ll: false, pl: false },
-        xyz: { pp: false, ll: false, pl: false },
+        Rg: { pp: false, ll: false, pl: false },
+        rmsf: { pp: false, ll: false, pl: false },
+        sasa: { pp: false, ll: false, pl: false },
       });
       setTermsAccepted(false);
       if (proteinRef.current) proteinRef.current.value = '';
@@ -195,10 +201,12 @@ export default function Dashboard() {
               <div className="results-header-cell">Protein - Ligand</div>
             </div>
             {[
-              { key: 'rmsd', label: '1. RMSD' },
+              { key: 'rmsd', label: '1. RMSD (Root Mean Square Deviation)' },
               { key: 'hbond', label: '2. H-Bond' },
-              { key: 'ionic', label: '3. Ionic Energy' },
-              { key: 'xyz', label: '4. XYZ' },
+              { key: 'ionic', label: '3. Binding Energy' },
+              { key: 'Rg', label: '4. Radius of Gyration' },
+              { key: 'rmsf', label: '5. RMSF (Root Mean Square Fluctuation)' },
+              { key: 'sasa', label: '6. SASA (Solvent Accessible Surface Area)' },
             ].map(({ key, label }) => (
               <div className="results-row" key={key}>
                 <div className="results-label">{label}</div>
@@ -247,7 +255,6 @@ export default function Dashboard() {
           </div>
         </form>
       </section>
-
       <Toast message={toast.msg} visible={toast.visible} />
     </Layout>
   );

@@ -16,6 +16,12 @@ const submissionSchema = new mongoose.Schema({
   },
   results: { type: Object, default: {} },
   termsAccepted: { type: Boolean, default: true },
+  returnedFile: {
+    url: { type: String },
+    publicId: { type: String },
+    filename: { type: String },
+  },
+  returnedAt: { type: Date },
 }, { timestamps: true });
 
 submissionSchema.index({ user: 1 });

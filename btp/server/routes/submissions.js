@@ -1,25 +1,15 @@
 import express from 'express';
 import multer from 'multer';
-import { v2 as cloudinary } from 'cloudinary';
+import cloudinary from '../config/cloudinary.js';
 import Submission from '../models/Submission.js';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } }); // 5MB
-
-function getCloudinaryConfig() {
-  const config = {
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-    api_key: process.env.CLOUDINARY_API_KEY,
-    api_secret: process.env.CLOUDINARY_API_SECRET,
-  };
-  cloudinary.config(config);
-  return config;
-}
+const uploadReturn = multer({ storage, limits: { fileSize: 20 * 1024 * 1024 } }); // 20MB for admin-returned results
 
 async function uploadToCloudinary(buffer, folder, filename) {
-  getCloudinaryConfig(); // config at request time, after dotenv has run
   return new Promise((resolve, reject) => {
     const stream = cloudinary.uploader.upload_stream(
       {
@@ -134,6 +124,70 @@ router.get('/admin/:id/file/:type', authenticate, requireAdmin, async (req, res)
     const file = type === 'protein' ? sub.proteinFile : sub.ligandFile;
     if (!file?.url) return res.status(404).json({ message: 'File not found' });
     res.json({ url: file.url, filename: file.filename || `${type}.pdb` });
+  } catch (err) {
+    res.status(500).json({ message: err.message || 'Failed' });
+  }
+});
+
+// Admin: upload returned results (stored on Cloudinary, visible to user on their portal)
+router.post(
+  '/admin/:id/return',
+  authenticate,
+  requireAdmin,
+  uploadReturn.single('returnedFile'),
+  async (req, res) => {
+    try {
+      const file = req.file;
+      if (!file?.buffer) {
+        return res.status(400).json({ message: 'Result file is required' });
+      }
+      const sub = await Submission.findById(req.params.id);
+      if (!sub) return res.status(404).json({ message: 'Submission not found' });
+
+      const uploaded = await uploadToCloudinary(file.buffer, 'returned', file.originalname);
+
+      if (sub.returnedFile?.publicId) {
+        try {
+          await cloudinary.uploader.destroy(sub.returnedFile.publicId, { resource_type: 'raw' });
+        } catch (_) {
+          /* ignore cleanup errors */
+        }
+      }
+
+      sub.returnedFile = {
+        url: uploaded.secure_url,
+        publicId: uploaded.public_id,
+        filename: file.originalname,
+      };
+      sub.returnedAt = new Date();
+      await sub.save();
+
+      const populated = await Submission.findById(sub._id).populate('user', 'email name').lean();
+      res.json(populated);
+    } catch (err) {
+      res.status(500).json({ message: err.message || 'Upload failed' });
+    }
+  }
+);
+
+// User: signed download metadata for returned results (ownership checked)
+router.get('/:id/returned-file', authenticate, async (req, res) => {
+  try {
+    if (!/^[0-9a-fA-F]{24}$/.test(req.params.id)) {
+      return res.status(404).json({ message: 'Not found' });
+    }
+    const sub = await Submission.findById(req.params.id);
+    if (!sub) return res.status(404).json({ message: 'Submission not found' });
+    if (!sub.user.equals(req.user._id)) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+    if (!sub.returnedFile?.url) {
+      return res.status(404).json({ message: 'No results returned yet' });
+    }
+    res.json({
+      url: sub.returnedFile.url,
+      filename: sub.returnedFile.filename || 'results',
+    });
   } catch (err) {
     res.status(500).json({ message: err.message || 'Failed' });
   }

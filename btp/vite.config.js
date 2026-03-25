@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
+      // Fallback when VITE_API_BASE is not set: same-origin /api → Express :5000
       '/api': {
         target: 'http://localhost:5000',
         changeOrigin: true,
